@@ -46,10 +46,7 @@ final class TemplatedMetadataUpdater implements MetadataUpdaterInterface
      */
     private const INT_TOKEN_ID_PLACEHOLDER = '{INT_TOKEN_ID}';
 
-    /**
-     * @var string
-     */
-    private const ASSET_URI_PLACEHOLDER = '{ASSET_URI}';
+
 
     /**
      * @param array<string, mixed> $template
@@ -59,35 +56,5 @@ final class TemplatedMetadataUpdater implements MetadataUpdaterInterface
     ) {
     }
 
-    public function updateMetadata(array &$metadata, int $tokenId, string $assetUri): void
-    {
-        if (null === $this->template) {
-            return;
-        }
 
-        foreach ($this->template as $key => $value) {
-            if (is_array($value) || (isset($metadata[$key]) && is_array($metadata[$key]))) {
-                throw new RuntimeException('Deep level replacement is not supported in METADATA_TEMPLATE.');
-            }
-
-            $metadata[$key] = $this->replacePlaceholders($value, $tokenId, $assetUri);
-        }
-    }
-
-    private function replacePlaceholders(mixed $value, int $tokenId, string $assetUri): mixed
-    {
-        if (! is_string($value)) {
-            return $value;
-        }
-
-        if (self::INT_TOKEN_ID_PLACEHOLDER === $value) {
-            return $tokenId;
-        }
-
-        return str_replace(
-            [self::TOKEN_ID_PLACEHOLDER, self::ASSET_URI_PLACEHOLDER],
-            [(string) $tokenId, $assetUri],
-            $value,
-        );
-    }
 }
